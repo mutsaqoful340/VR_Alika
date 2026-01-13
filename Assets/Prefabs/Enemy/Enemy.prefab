@@ -192,6 +192,8 @@ MonoBehaviour:
   destroyDelay: 0
   deathEffectPrefab: {fileID: 0}
   deathEffectLifetime: 2
+  movementAxis: 0
+  faceMovementDirection: 1
 --- !u!1 &7951728000214831025
 GameObject:
   m_ObjectHideFlags: 0

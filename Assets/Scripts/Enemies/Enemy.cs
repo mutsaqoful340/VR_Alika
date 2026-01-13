@@ -1,5 +1,15 @@
 using UnityEngine;
 
+public enum MovementAxis
+{
+    Forward,
+    Backward,
+    Left,
+    Right,
+    Up,
+    Down
+}
+
 public class Enemy : MonoBehaviour
 {
     [Header("Movement")]
@@ -15,15 +25,34 @@ public class Enemy : MonoBehaviour
     public GameObject deathEffectPrefab;
     public float deathEffectLifetime = 2f;
 
+    [Header("Move Direction")]
+    public MovementAxis movementAxis = MovementAxis.Forward;
+    
+    [Tooltip("Should enemy rotate to face movement direction?")]
+    public bool faceMovementDirection = true;
+
+    private Vector3 moveDirection;
     private bool isDead = false;
     private bool isStopped = false;
+
+    private void Start()
+    {
+        // Convert enum to Vector3 direction
+        moveDirection = GetDirectionVector(movementAxis);
+        
+        // Rotate enemy to face movement direction
+        if (faceMovementDirection && moveDirection != Vector3.zero)
+        {
+            transform.rotation = Quaternion.LookRotation(moveDirection);
+        }
+    }
 
     private void Update()
     {
         if (!isDead && !isStopped)
         {
             // Move forward continuously
-            transform.Translate(Vector3.forward * moveSpeed * Time.deltaTime);
+            transform.Translate(moveDirection * moveSpeed * Time.deltaTime);
         }
     }
 
@@ -46,6 +75,27 @@ public class Enemy : MonoBehaviour
     public void ResumeMoving()
     {
         isStopped = false;
+    }
+
+    private Vector3 GetDirectionVector(MovementAxis axis)
+    {
+        switch (axis)
+        {
+            case MovementAxis.Forward:
+                return Vector3.forward;
+            case MovementAxis.Backward:
+                return Vector3.back;
+            case MovementAxis.Left:
+                return Vector3.left;
+            case MovementAxis.Right:
+                return Vector3.right;
+            case MovementAxis.Up:
+                return Vector3.up;
+            case MovementAxis.Down:
+                return Vector3.down;
+            default:
+                return Vector3.forward;
+        }
     }
 
     private void Die()
